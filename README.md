@@ -5,6 +5,12 @@ signals that it was built with an AI site/app builder (Lovable, v0, Bolt.new,
 Framer AI, Durable, Dora, Wix ADI, 10Web, Softr, Base44, Replit) or heavily
 AI-assisted copy and code.
 
+For a live URL it defaults to a real backend: headless Chromium (Playwright)
+actually renders the page, so checks see what a visitor sees — not just the
+near-empty shell most AI site builders (Lovable, v0, Bolt) ship as static
+HTML before their JS runs. It also crawls a few internal pages and watches
+real network traffic for builder CDNs that only show up at runtime.
+
 It does not detect "AI-made" in some deep forensic sense. It looks for things
 people forget to clean up before shipping: generator meta tags, injected
 builder badges, default scaffold titles/favicons, boilerplate class names,
@@ -15,23 +21,50 @@ AI-builder packages left in `package.json` plus filler-style code comments.
 scan means "no traces found," not "definitely human-made." Treat the score as
 a lead, not a verdict — the tool says this at the end of every run too.
 
+## Install
+
+```bash
+curl -fsS https://raw.githubusercontent.com/AABABABABABABBABAABABABABABBA/is-this-site-ai-made/master/install.sh | bash
+```
+
+Clones the repo to `~/.is-this-site-ai-made`, runs `npm install` (this also
+pulls down a headless Chromium for the browser backend on first run), drops
+a `is-this-site-ai-made` wrapper into `~/.local/bin`, then launches straight
+into the interactive prompt. Re-running the same command later just pulls
+and updates in place. Needs Node.js 18+ and git already on your machine.
+
 ## Run it
 
 ```bash
 npm install
 node bin/cli.js                      # interactive mode
-node bin/cli.js https://example.com  # scan a live URL directly
+node bin/cli.js https://example.com  # scan a live URL (renders it, crawls a few pages)
 node bin/cli.js ./my-project         # scan a local project folder
-node bin/cli.js https://example.com --no-deep   # skip fetching linked JS/CSS
+node bin/cli.js https://example.com --quick   # skip the browser, one plain HTTP fetch
 ```
 
 No args drops you into an interactive prompt: enter a URL or a local folder
-path, confirm whether to deep-scan (fetches same-origin JS/CSS too, default
-yes — just press enter), and it runs.
+path, then confirm whether to render it in a real browser (default yes —
+just press enter) or do the quick static-HTML-only pass instead.
 
 ## What it checks
 
-**Live site scan**
+**Backend (default for a URL, headless Chromium via Playwright)**
+- Renders the page with real JS execution instead of just fetching static
+  HTML, so content a client-rendered AI builder injects at runtime (badges,
+  copy, scaffold classes, placeholder images) actually gets seen
+- Crawls a few same-origin internal links and merges findings across pages —
+  a "Built with Lovable" footer or a cliché paragraph on `/about` counts just
+  as much as one on the homepage
+- Watches every real network request the page makes and flags known AI
+  builder CDNs (Lovable's `cdn.gpteng.co`, Framer, Dora, Durable, Base44,
+  Replit, ...) even when they're injected by JS and never appear in the
+  static HTML at all
+- Flags sites still sitting on the builder's own free subdomain
+  (`*.lovable.app`, `*.replit.app`, `*.bolt.host`, ...) instead of a custom
+  domain
+
+**Page-level checks** (run on every rendered page, live or local)
 - `<meta name="generator">` against known AI builders
 - Raw AI-builder fingerprints (Lovable's `cdn.gpteng.co`/`data-lov-id`, v0's
   `data-component-path`, Framer, Dora, Durable, Base44, Replit, Wix ADI,

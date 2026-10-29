@@ -2,7 +2,7 @@
 import { printBanner } from '../src/banner.js'
 import { printReport } from '../src/report.js'
 import { askText, askYesNo, closePrompt } from '../src/prompt.js'
-import { scanUrl, scanLocalPath, looksLikeLocalPath } from '../src/app.js'
+import { scanUrlQuick, scanUrlDeep, scanLocalPath, looksLikeLocalPath } from '../src/app.js'
 import { c } from '../src/colors.js'
 
 async function runInteractive() {
@@ -22,15 +22,18 @@ async function runInteractive() {
     return
   }
 
-  const deep = await askYesNo('run a deep scan? (also pulls linked JS/CSS)', true)
+  const deep = await askYesNo(
+    'render it in a real headless browser and crawl a few pages? (slower, catches JS-only AI builders)',
+    true,
+  )
   closePrompt()
   console.log()
-  const result = await scanUrl(input, { deep })
+  const result = deep ? await scanUrlDeep(input) : await scanUrlQuick(input)
   printReport(result)
 }
 
 async function runDirect(args) {
-  const deep = !args.includes('--no-deep')
+  const quick = args.includes('--quick')
   const target = args.find(a => !a.startsWith('--'))
 
   printBanner()
@@ -42,7 +45,7 @@ async function runDirect(args) {
     return
   }
 
-  const result = await scanUrl(target, { deep })
+  const result = quick ? await scanUrlQuick(target) : await scanUrlDeep(target)
   printReport(result)
 }
 

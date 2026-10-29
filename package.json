@@ -14,7 +14,10 @@
     "type": "git",
     "url": "git+https://github.com/AABABABABABABBABAABABABABABBA/is-this-site-ai-made.git"
   },
-  "keywords": ["ai-detection", "cli"],
+  "keywords": [
+    "ai-detection",
+    "cli"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
@@ -25,6 +28,7 @@
     "node": ">=18.17"
   },
   "dependencies": {
-    "cheerio": "^1.2.0"
+    "cheerio": "^1.2.0",
+    "playwright": "^1.63.0"
   }
 }
