@@ -1,0 +1,30 @@
+{
+  "name": "is-this-site-ai-made",
+  "version": "1.0.0",
+  "description": "Terminal tool that scans a live site or local project for AI-builder fingerprints",
+  "type": "module",
+  "main": "src/app.js",
+  "bin": {
+    "is-this-site-ai-made": "bin/cli.js"
+  },
+  "scripts": {
+    "start": "node bin/cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AABABABABABABBABAABABABABABBA/is-this-site-ai-made.git"
+  },
+  "keywords": ["ai-detection", "cli"],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AABABABABABABBABAABABABABABBA/is-this-site-ai-made/issues"
+  },
+  "homepage": "https://github.com/AABABABABABABBABAABABABABABBA/is-this-site-ai-made#readme",
+  "engines": {
+    "node": ">=18.17"
+  },
+  "dependencies": {
+    "cheerio": "^1.2.0"
+  }
+}
