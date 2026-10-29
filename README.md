@@ -21,6 +21,18 @@ AI-builder packages left in `package.json` plus filler-style code comments.
 scan means "no traces found," not "definitely human-made." Treat the score as
 a lead, not a verdict — the tool says this at the end of every run too.
 
+## Install
+
+```bash
+curl -fsS https://raw.githubusercontent.com/AABABABABABABBABAABABABABABBA/is-this-site-ai-made/master/install.sh | bash
+```
+
+Clones the repo to `~/.is-this-site-ai-made`, runs `npm install` (this also
+pulls down a headless Chromium for the browser backend on first run), drops
+a `is-this-site-ai-made` wrapper into `~/.local/bin`, then launches straight
+into the interactive prompt. Re-running the same command later just pulls
+and updates in place. Needs Node.js 18+ and git already on your machine.
+
 ## Run it
 
 ```bash
